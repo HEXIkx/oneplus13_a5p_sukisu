@@ -52,13 +52,22 @@ jobs:
         run: |
          git config --global user.name "Futaba"
          git config --global user.email "3199167602@qq.com"
-
+      
       - name: Install dependencies
         run: |
-          sudo apt update && sudo apt upgrade -y
-          sudo apt install -y python3 git curl
-          sudo apt install -y python3 git curl ccache
-
+         # ---------- 彻底移除 Snap，防止连接商店失败拖慢构建 ----------
+         sudo systemctl stop snapd.service || true
+         sudo systemctl disable snapd.service || true
+         sudo apt remove --purge -y snapd firefox 2>/dev/null || true
+         sudo rm -rf /var/cache/snapd /snap ~/snap 2>/dev/null || true
+         # 可选：标记 firefox 不再通过 snap 安装（避免下次又拉回来）
+         sudo apt-mark hold firefox 2>/dev/null || true
+        
+         # ---------- 正常更新和安装编译依赖 ----------
+         sudo apt update
+         sudo apt upgrade -y
+         sudo apt install -y python3 git curl ccache
+            
       - name: Restore ccache
         uses: actions/cache@v3
         with:
