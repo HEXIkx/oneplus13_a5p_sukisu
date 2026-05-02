@@ -163,11 +163,12 @@ jobs:
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android15-6.6 || true
           git clone https://github.com/SukiSU-Ultra/SukiSU_patch.git || true
 
+      # 8. 安装 KernelSU
       - name: Set up KernelSU
         if: inputs.ENABLE_KSU
         run: |
           cd kernel_workspace/kernel_platform
-          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s ${{ github.event.inputs.KSU_BRANCH }}
+          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s main
           cd ./KernelSU
           KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10700)
           echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
